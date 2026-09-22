@@ -16,6 +16,10 @@ const accountSettings = {
       "inventory" : {},
     }
 
+app.get('/', (req,res)=>{
+  res.send("<h1>Welcome!</h1>")
+})
+
 app.get('/account',(req,res)=>{
   res.render("account", { title: "Account Page", accountSettings});
 })
