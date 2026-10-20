@@ -2,4 +2,69 @@
   box-sizing: border-box;
 }
 
-// Styles for page
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f7fb;
+  color: #333;
+  margin: 0;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+/* Title */
+h1 {
+  color: #34495e;
+  margin-bottom: 30px;
+}
+
+/* login and registration*/
+form {
+  background-color: white;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+/* labels */
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+/* Input */
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Submit */
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #5488c3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #357abd;
+}
+
+/* Navigation links */
+a {
+  color: #3e86d7;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

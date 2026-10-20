@@ -1,1 +1,1 @@
-I did not use AI. 
+1. ask the format and some basic questions of css. 
