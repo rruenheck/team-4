@@ -1,12 +1,17 @@
 import express from "express";
+import auth from "./routes/auth.js"
+import { connectToMongoDB } from "./db.js";
 
+await connectToMongoDB();
 const app = express();
 app.use(express.json())
+app.use(auth)
 
 app.set("view engine", "ejs");
 app.set("views", "views");
 
 const PORT = 3000;
+
 
 
 const accountSettings = {
