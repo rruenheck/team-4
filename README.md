@@ -16,7 +16,7 @@
   - it is interesting becaues it is visual and interactive
   - it serves the purpose of entertainment
 
-Sprint 1 Update
+## Sprint 1 Update
 
 - project
   - This project is a game that will have pets who are able to be customized and leveled up by feeding them.
@@ -34,3 +34,14 @@ Sprint 1 Update
   - Confirm that you have installed the project's dependencies, including Express in “pachage.json” file with “npm install”.
   - Then, start the server with node server.js and visit http://localhost:3000 to confirm the homepage and then visit http://localhost:3000/account.
   - The homepage and account page should load with no console errors.
+
+## Sprint 2 Update
+
+Update (to do)
+
+Diagram (to do)
+
+### Design Decisions
+
+- Dylan
+  - I chose to render the login and registration pages with EJS through Express GET routes, and submitted the forms through POST requests. A credible alternative was to render the pages with client-side JavaScript and submit the credentials using fetch(), but this adds additional complexity and the only thing it really resolves is fixing errors without reloading the pages. Additionally, the standard form works now without extra Javascript, which can be added later if needed to work with the form.
