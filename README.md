@@ -45,3 +45,6 @@ Diagram (to do)
 
 - Dylan
   - I chose to render the login and registration pages with EJS through Express GET routes, and submitted the forms through POST requests. A credible alternative was to render the pages with client-side JavaScript and submit the credentials using fetch(), but this adds additional complexity and the only thing it really resolves is fixing errors without reloading the pages. Additionally, the standard form works now without extra Javascript, which can be added later if needed to work with the form.
+
+- Artemisia
+  - I choose to use fetch() for the login and registration page. Since if I use the HTML form to display, our backend returns JSON and users will see the raw JSON which is not good looking and lack of feedback for them. Using fetch() will allow them to stay at the same page while get useful and clear responce of success or error messages. 

@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <title><%= title %></title>
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
     <h1>Login</h1>
 
-    <form action="/login" method="POST">
+    <form id="login-form" action="/login" method="POST">
       <label for="email">Email</label>
       <input
         id="email"
@@ -28,6 +29,44 @@
 
       <button type="submit">Login</button>
     </form>
+
+
+<p id="message"></p>
+
+<script>
+  const form = document.getElementById("login-form");
+  const message = document.getElementById("message");
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      const response = await fetch("/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        message.textContent = data.message || "Login successful!";
+        message.style.color = "green";
+      } else {
+        message.textContent = data.error || "Login failed";
+        message.style.color = "red";
+      }
+    } catch (err) {
+      message.textContent = "Could not connect to the server";
+      message.style.color = "red";
+    }
+  });
+</script>
 
     <p>Need an account? <a href="/register">Register</a></p>
     <p><a href="/home">Home</a></p>
