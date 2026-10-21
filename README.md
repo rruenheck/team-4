@@ -42,10 +42,10 @@
 
 - changes
   - added controller, public, repository, routes, and service folders;
-    - added auth.js within each of those folders. 
+  - added auth.js within each of those folders. 
   - Added db.js. 
   - added login.ejs and register.ejs to views folder.
-    - updated home.ejs in views folder.
+  - updated home.ejs in views folder.
   - Updated AI disclosures and README, server.js, package.json, package-lock.json amd style.css (in public).
   - added user "Log in" and "Registration" features split into 4 layers: routes, controller, service, and repository. 
   - connect to MongoDB
@@ -62,14 +62,22 @@
   - Comfirm Node.js and npm are installed. 
   - Confirm that you have installed the project's dependencies, including Express in “pachage.json” file with “npm install”.
   - join team 4's MongoDB project 0
-    - authorize IP on MongoDB
-    - create new databse user with password on MongoDB
+  - authorize IP on MongoDB
+  - create new databse user with password on MongoDB
   - create .env file
   - get a connection string from MongoDB's "Connect" on the project overview
   - add "MONGODB_URI="your-connection-string"", replacing the username and password placeholders with your newly created database user and password.
   - save your updated .env file
   - Then, start the server with node server.js and visit http://localhost:3000 to confirm the homepage and then visit http://localhost:3000/account.
   - The homepage and account page should load with no console errors.
+  - click the "Registration" button to open the User Registration page
+  - input "test@test.com" for the email with the password "123pass" to test for invalid for user "email already register"
+  - input "test3@test.com" for the email with "123pass" for the password to test for proper user registration
+  - attempt to register with either both or one of the inputs (email or password) as completely blank to test for "email and password required".
+  - click the "back to login" button
+  - input "test5@test.com" for the email and "111" to test for a non-registered email.
+  = input test2@test.com" for the email and "111" for the password to test for invalid password.
+  -input "test2@test.com for the email and "pass123" for the password to test for a valid log in
 
 
 Diagram (to do)  
