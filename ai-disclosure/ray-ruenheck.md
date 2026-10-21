@@ -1,1 +1,1 @@
-I did not use AI
+1. Used Ai for general syntax and questions about methods.
