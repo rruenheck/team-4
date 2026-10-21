@@ -79,7 +79,41 @@
     = input test2@test.com" for the email and "111" for the password to test for invalid password.
     -input "test2@test.com for the email and "pass123" for the password to test for a valid log in
 
-Diagram (to do)
+Diagram
+
+Browser
+|
+v
+server.js
+|-- static --> public/style.css
+|-- GET / --> redirect to /home
+|-- GET /home --> views/home.ejs
+|-- GET /account --> views/account.ejs
+|
+v
+routes/auth.js
+|-- GET /login --> views/login.ejs
+|-- GET /register --> views/register.ejs
+|-- POST /login
+|-- POST /register
+|
+v
+controller/auth.js
+(loginUser, registerUser)
+|
+v
+service/auth.js <--> bcrypt
+(login, register)
+|
+v
+repository/user.js
+(findUser, insert)
+|
+v
+db.js
+|
+v
+MongoDB "users" collection
 
 ### Design Decisions
 
