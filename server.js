@@ -32,10 +32,6 @@ app.get("/account", (req, res) => {
   res.render("account", { title: "Account", accountSettings });
 });
 
-app.get("/login", (req, res) => {
-  res.render("login", { title: "Login" });
-});
-
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
