@@ -12,3 +12,15 @@ export const register = async ({ name, email, password }) => {
 
   return { id, name, email }
 }
+
+export const login = async ({ name, email, password }) => {
+  const savedUser = await user.findUser(email);
+  if (!savedUser){
+    const err = new Error("Email not registered"); err.status = 401; throw err;
+  }
+  const passwordValidation = await bcrypt.compare(password, savedUser.passwordHash);
+  if (!passwordValidation){
+    const err = new Error("Invalid password"); err.status = 401; throw err;
+  }
+  return {id: savedUser.id, name: savedUser.name, email: savedUser.email}
+}

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { registerUser } from "../controller/auth.js";
+import { loginUser } from "../controller/auth.js";
 
 const router = Router();
 
@@ -12,11 +13,7 @@ router.get("/register", (req, res) => {
   // Not implemented yet
 });
 
-router.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  // Not implemented yet
-  res.status(200).json({ message: "Login successful" });
-});
+router.post("/login", loginUser);
 
 router.post("/register", registerUser);
 
