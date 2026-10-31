@@ -1,4 +1,4 @@
-import { getAccount } from "../service/auth.js";
+import { getAccount } from "../service/account.js";
 
 export const showAccount = async (req, res) => {
   if (!req.session.userId) {
