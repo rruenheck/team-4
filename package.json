@@ -22,9 +22,11 @@
     "dotenv": "^18.0.8",
     "ejs": "^6.0.1",
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "mongodb": "^7.7.0"
   },
   "allowScripts": {
-    "node-gyp-build@4.8.4": true
+    "node-gyp-build@4.8.4": true,
+    "bcrypt@6.0.0": true
   }
 }
