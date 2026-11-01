@@ -2,6 +2,12 @@ import bcrypt from "bcrypt";
 import * as user from "../repository/user.js";
 
 export const register = async ({ name, email, password }) => {
+  if (!email || !password) {
+    const err = new Error("Email and password required");
+    err.status = 400;
+    throw err;
+  }
+
   if (await user.findUser(email)) {
     const err = new Error("Email already registered");
     err.status = 409;
@@ -14,6 +20,11 @@ export const register = async ({ name, email, password }) => {
 };
 
 export const login = async ({ name, email, password }) => {
+  if (!email || !password) {
+    const err = new Error("Email and password required");
+    err.status = 400;
+    throw err;
+  }
   const savedUser = await user.findUser(email);
   if (!savedUser) {
     const err = new Error("Email not registered");
