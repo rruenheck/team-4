@@ -79,8 +79,8 @@
     = input test2@test.com" for the email and "111" for the password to test for invalid password.
     -input "test2@test.com for the email and "pass123" for the password to test for a valid log in
 
-Diagram
-
+## System Diagram
+```
 Browser
 |
 v
@@ -114,6 +114,7 @@ db.js
 |
 v
 MongoDB "users" collection
+```
 
 ### Design Decisions
 
