@@ -7,7 +7,7 @@ export const registerUser = async (req, res) => {
     const user = await auth.register({ name, email, password });
     res.status(201).json(user);
   } catch (err) {
-    res.status(err.status || 500).json({ error: err.message });
+    return next(err);
   }
 };
 
@@ -19,23 +19,24 @@ export const loginUser = async (req, res) => {
 
     req.session.regenerate((err) => {
       if (err) {
-        return res.status(500).json({
-          error: "Could not create login session",
-        });
+        const sessionError = new Error("Could not create login session");
+      sessionError.status = 500;
+      sessionError.cause = err;
+      return next(sessionError);
       }
-
       req.session.userId = user.id;
       req.session.save((err) => {
         if (err) {
-          return res.status(500).json({
-            error: "Could not save login session",
-          });
+                  const sessionError = new Error("Could not save login session");
+      sessionError.status = 500;
+      sessionError.cause = err;
+      return next(sessionError);
         }
 
         res.status(200).json(user);
       });
     });
   } catch (err) {
-    res.status(err.status || 500).json({ error: err.message });
+    return next(err);
   }
 };

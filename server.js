@@ -40,6 +40,18 @@ app.get("/home", (req, res) => {
   res.render("home", { title: "Home" });
 });
 
+app.use((err, req, res, next) => {
+  console.error(err);
+  if(res.headersSent){
+    return next(err);
+  }
+  const status = err.status || 500;
+  const message = err.message || "Internal server error";
+  return res.status(status).json({
+    error: message,
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

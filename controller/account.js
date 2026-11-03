@@ -13,6 +13,9 @@ export const showAccount = async (req, res) => {
 
     res.render("account", { title: "Account", account });
   } catch (err) {
-    res.status(500).send("Could not load account");
+    const accountError = new Error("Could not load account");
+    accountError.status = 500;
+    accountError.cause = err;
+    return next(accountError);
   }
 };
