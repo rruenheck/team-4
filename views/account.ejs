@@ -8,10 +8,9 @@
   <body>
     <h1><%= title %></h1>
     <ul>
-      <li><%= accountSettings.id %></li>
-      <li><%= accountSettings.name %></li>
-      <li><%= accountSettings.number_of_pets %></li>
-      <li><%= accountSettings.inventory %></li>
+      <li>Account ID: <%= account.id %></li>
+      <li>Name: <%= account.name || "Not provided" %></li>
+      <li>Email: <%= account.email %></li>
     </ul>
   </body>
 </html>

@@ -67,6 +67,7 @@
   - create .env file
   - get a connection string from MongoDB's "Connect" on the project overview
   - add "MONGODB_URI="your-connection-string"", replacing the username and password placeholders with your newly created database user and password.
+  - add the SESSION_SECRET="your-secret-string" variable, by generating a cryptographically secure string (in terminal run: node -e "console.log(require('crypto').randomBytes(32).toString('base64'))" and retrieve the value)
   - save your updated .env file
   - Then, start the server with node server.js and visit http://localhost:3000 to confirm the homepage and then visit http://localhost:3000/account.
   - The homepage and account page should load with no console errors.
@@ -79,8 +80,9 @@
     = input test2@test.com" for the email and "111" for the password to test for invalid password.
     -input "test2@test.com for the email and "pass123" for the password to test for a valid log in
 
-Diagram
+## System Diagram
 
+```
 Browser
 |
 v
@@ -114,16 +116,17 @@ db.js
 |
 v
 MongoDB "users" collection
+```
 
 ### Design Decisions
 
 - Dylan
-  - I chose to render the login and registration pages with EJS through Express GET routes, and submitted the forms through POST requests. A credible alternative was to render the pages with client-side JavaScript and submit the credentials using fetch(), but this adds additional complexity and the only thing it really resolves is fixing errors without reloading the pages. Additionally, the standard form works now without extra Javascript, which can be added later if needed to work with the form.
+  - I chose to implement the authentication routes in a separate file under the routes folder. The other acceptable method would have been to add them to the server file, but I chose to refrain from this in order to promote long-term readability and modularity practices. As our application grows, it will become extremely important that we separate behavior into multiple files, so that they become easier to find and the file navigation is more intuitive. This also supports the structure of a layered architecture, as each layer is meant to handle different responsibilities without interfering or having knowledge of the others.
 
 - Jackson
 - One decision I made was to add the login feature onto the same layers as our registration feature which kept things easier to navigate and grouped them by responsibility. An alternative would have been to use separate folders for each feature, which would have been a perfectly valid approach. But for the scope and current state of the project (only login and registration features implemented), grouping the features together right now makes more sense for ease of use for our team. Although we can switch to the alternative in the future if the scope expands significantly further for those features. I also chose to add another check to the login feature in our service folder that checks if the password is correct or not rather than using the (!savedUser) function. A credible alternative would have been to use that "if (!savedUser)" function to check both, but this would have made it impossible for the end user to tell whether it was the password being wrong or the email not being valid. This helps the end user understand that first whether the email is valid or not, then checks if the password is correct as well so an end user can only see the incorrect password if their email was valid.
 - Artemisia
   - I choose to use fetch() for the login and registration page. Since if I use the HTML form to display, our backend returns JSON and users will see the raw JSON which is not good looking and lack of feedback for them. Using fetch() will allow them to stay at the same page while get useful and clear responce of success or error messages.
+
 - Ray
-  - One design decision that came up was choosing to encrypt the password for the database. My original pr had not had this. I ultimately decided to implement it because it is best practice to not have a
-    visible in the database.
+  - One design decision I made was to store our data in MongoDB rather than a local file. MongoDB handles concurrent writes safely, lets us query and update individual documents without loading everything, and keeps the data persistent independent of the app server. The alternative was a local .json file that we read and write with fs. That would be simpler, since it needs no database setup and the data is easy to inspect and reset, but it doesn’t handle simultaneous writes well and doesn’t scale past a small dataset which is why I ultimately went with MongoDB.

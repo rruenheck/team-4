@@ -10,7 +10,6 @@ router.get("/login", (req, res) => {
 
 router.get("/register", (req, res) => {
   res.render("register", { title: "Register" });
-  // Not implemented yet
 });
 
 router.post("/login", loginUser);
