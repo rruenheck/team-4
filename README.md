@@ -67,6 +67,7 @@
   - create .env file
   - get a connection string from MongoDB's "Connect" on the project overview
   - add "MONGODB_URI="your-connection-string"", replacing the username and password placeholders with your newly created database user and password.
+  - add the SESSION_SECRET="your-secret-string" variable, by generating a cryptographically secure string (in terminal run: node -e "console.log(require('crypto').randomBytes(32).toString('base64'))" and retrieve the value)
   - save your updated .env file
   - Then, start the server with node server.js and visit http://localhost:3000 to confirm the homepage and then visit http://localhost:3000/account.
   - The homepage and account page should load with no console errors.
