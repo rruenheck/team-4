@@ -42,11 +42,11 @@ app.get("/home", (req, res) => {
 
 app.use((err, req, res, next) => {
   console.error(err);
-  if(res.headersSent){
+  if (res.headersSent) {
     return next(err);
   }
   const status = err.status || 500;
-  const message = err.message || "Internal server error";
+  const message = status >= 500 ? "Internal server error" : err.message;
   return res.status(status).json({
     error: message,
   });

@@ -1,6 +1,6 @@
 import { getAccount } from "../service/account.js";
 
-export const showAccount = async (req, res) => {
+export const showAccount = async (req, res, next) => {
   if (!req.session.userId) {
     return res.redirect("/login");
   }

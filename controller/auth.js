@@ -1,6 +1,6 @@
 import * as auth from "../service/auth.js";
 
-export const registerUser = async (req, res) => {
+export const registerUser = async (req, res, next) => {
   const { name, email, password } = req.body;
 
   try {
@@ -11,7 +11,7 @@ export const registerUser = async (req, res) => {
   }
 };
 
-export const loginUser = async (req, res) => {
+export const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
@@ -20,17 +20,17 @@ export const loginUser = async (req, res) => {
     req.session.regenerate((err) => {
       if (err) {
         const sessionError = new Error("Could not create login session");
-      sessionError.status = 500;
-      sessionError.cause = err;
-      return next(sessionError);
+        sessionError.status = 500;
+        sessionError.cause = err;
+        return next(sessionError);
       }
       req.session.userId = user.id;
       req.session.save((err) => {
         if (err) {
-                  const sessionError = new Error("Could not save login session");
-      sessionError.status = 500;
-      sessionError.cause = err;
-      return next(sessionError);
+          const sessionError = new Error("Could not save login session");
+          sessionError.status = 500;
+          sessionError.cause = err;
+          return next(sessionError);
         }
 
         res.status(200).json(user);
