@@ -4,11 +4,24 @@
     <meta charset="UTF-8" />
     <title><%= title %></title>
     <link rel="stylesheet" href="/style.css" />
+    <!-- Swap 4xx/5xx responses too, so error messages from the server are shown -->
+    <meta
+      name="htmx-config"
+      content='{"responseHandling":[{"code":"204","swap":false},{"code":"[2345]..","swap":true}]}'
+    />
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
   </head>
   <body>
     <h1>Register</h1>
 
-    <form id="register-form" action="/register" method="POST">
+    <form
+      id="register-form"
+      action="/register"
+      method="POST"
+      hx-post="/register"
+      hx-target="#message"
+      hx-swap="innerHTML"
+    >
       <label for="email">Email</label>
       <input
         id="email"
@@ -30,42 +43,7 @@
       <button type="submit">Register</button>
     </form>
 
-    <p id="message"></p>
-
-    <script>
-      const form = document.getElementById("register-form");
-      const message = document.getElementById("message");
-
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-
-        try {
-          const response = await fetch("/register", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-          });
-
-          const data = await response.json();
-
-          if (response.ok) {
-            message.textContent = `Registration successful! Account ID: ${data.id}. Email: ${data.email}`;
-            message.style.color = "green";
-          } else {
-            message.textContent = data.error || "Registration failed";
-            message.style.color = "red";
-          }
-        } catch (err) {
-          message.textContent = "Could not connect to the server";
-          message.style.color = "red";
-        }
-      });
-    </script>
+    <p id="message" aria-live="polite"></p>
 
     <p><a href="/login">Back to login</a></p>
     <p><a href="/home">Home</a></p>

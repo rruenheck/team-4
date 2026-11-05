@@ -47,6 +47,11 @@ app.use((err, req, res, next) => {
   }
   const status = err.status || 500;
   const message = status >= 500 ? "Internal server error" : err.message;
+  if (req.get("HX-Request")) {
+    return res
+      .status(status)
+      .render("partials/register-message", { user: null, error: message });
+  }
   return res.status(status).json({
     error: message,
   });

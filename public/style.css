@@ -68,3 +68,12 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+/* Auth feedback messages */
+.message-success {
+  color: green;
+}
+
+.message-error {
+  color: red;
+}
