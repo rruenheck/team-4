@@ -127,3 +127,14 @@ MongoDB "users" collection
 
 - Ray
   - One design decision I made was to store our data in MongoDB rather than a local file. MongoDB handles concurrent writes safely, lets us query and update individual documents without loading everything, and keeps the data persistent independent of the app server. The alternative was a local .json file that we read and write with fs. That would be simpler, since it needs no database setup and the data is easy to inspect and reset, but it doesn’t handle simultaneous writes well and doesn’t scale past a small dataset which is why I ultimately went with MongoDB.
+
+## Sprint 3
+
+- changes
+  - the registration submission now uses HTMX, allowing the submission messages to be returned by the server as an HTML fragment and swapped into #message, replacing the hand-written fetch() and DOM update.
+ 
+### Design Decisions
+
+- Dylan
+  - - Dylan
+  - I chose to convert the registration submission to HTMX rather than the login submission. Registration fits HTMX's pattern better as the result is just a success or error message swapped into the same page. This means the server can return a small HTML fragment and the hand-written fetch() and DOM update can be removed, and so there is less code to maintain and fewer places for bugs. I chose registration over login because its result is just a message swapped into the same page, while a successful login redirects to /account and would need extra handling such as an HX-Redirect header.
