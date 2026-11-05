@@ -5,8 +5,23 @@ export const registerUser = async (req, res, next) => {
 
   try {
     const user = await auth.register({ name, email, password });
+
+    if (req.get("HX-Request")) {
+      return res
+        .status(201)
+        .render("partials/register-message", { user, error: null });
+    }
+
     res.status(201).json(user);
   } catch (err) {
+    if (req.get("HX-Request") && err.status && err.status < 500) {
+      return res
+        .status(err.status)
+        .render("partials/register-message", {
+          user: null,
+          error: err.message,
+        });
+    }
     return next(err);
   }
 };

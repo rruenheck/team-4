@@ -1,0 +1,5 @@
+<% if (error) { %>
+<span class="message-error"><%= error %></span>
+<% } else { %>
+<span class="message-success">Registration successful! Account ID: <%= user.id %>. Email: <%= user.email %></span>
+<% } %>
