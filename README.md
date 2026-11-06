@@ -58,27 +58,24 @@
   - User "Log in" and "Registration" added for end users to either sign into an existing account or register a new account.
 
 - verify
-  - Clone the repository.
-  - Comfirm Node.js and npm are installed.
-  - Confirm that you have installed the project's dependencies, including Express in “pachage.json” file with “npm install”.
-  - join team 4's MongoDB project 0
-  - authorize IP on MongoDB
-  - create new databse user with password on MongoDB
-  - create .env file
-  - get a connection string from MongoDB's "Connect" on the project overview
-  - add "MONGODB_URI="your-connection-string"", replacing the username and password placeholders with your newly created database user and password.
-  - add the SESSION_SECRET="your-secret-string" variable, by generating a cryptographically secure string (in terminal run: node -e "console.log(require('crypto').randomBytes(32).toString('base64'))" and retrieve the value)
-  - save your updated .env file
-  - Then, start the server with node server.js and visit http://localhost:3000 to confirm the homepage and then visit http://localhost:3000/account.
-  - The homepage and account page should load with no console errors.
-  - click the "Registration" button to open the User Registration page
-  - input "test@test.com" for the email with the password "123pass" to test for invalid for user "email already register"
-  - input "test3@test.com" for the email with "123pass" for the password to test for proper user registration
-  - attempt to register with either both or one of the inputs (email or password) as completely blank to test for "email and password required".
+  - clone the repository.
+  - confirm Node.js and npm are installed
+  - run the following in the devcontainer terminal:
+    - `cp .env.example .env`
+    - `dc-up mongo`
+    - `npm install`
+    - `node server.js`
+  - visit http://localhost:3000 to confirm the homepage
+  - click the "Register" button to open the user registration page
+  - input "test@test.com" for the email with the password "123pass" to see if registration works, expect "Registration successful!" with an account ID.
+  - submit the same "test@test.com" / "123pass" again, expect "Email already registered".
+  - submit with the email, the password, or both left blank. Expect "Email and password required" (remove the `required` attribute in the browser dev tools to send a blank field).
   - click the "back to login" button
-  - input "test5@test.com" for the email and "111" to test for a non-registered email.
-    = input test2@test.com" for the email and "111" for the password to test for invalid password.
-    -input "test2@test.com for the email and "pass123" for the password to test for a valid log in
+  - input "test5@test.com" for the email and "123pass", expect "Email not registered".
+  - input "test@test.com" for the email and "111", expect "Invalid password".
+  - input "test@test.com" for the email and "123pass" for the password to test for a valid log in, should redirect to the account page
+  - you have now registered an account and logged in successfully
+  - stop the server (Ctrl+C), start it again with `node server.js`, and log in with "test@test.com" / "123pass" again, it should still work
 
 ## System Diagram
 
@@ -132,3 +129,14 @@ MongoDB "users" collection
 
 - Ray
   - One design decision I made was to store our data in MongoDB rather than a local file. MongoDB handles concurrent writes safely, lets us query and update individual documents without loading everything, and keeps the data persistent independent of the app server. The alternative was a local .json file that we read and write with fs. That would be simpler, since it needs no database setup and the data is easy to inspect and reset, but it doesn’t handle simultaneous writes well and doesn’t scale past a small dataset which is why I ultimately went with MongoDB.
+
+## Sprint 3
+
+- changes
+  - the registration submission now uses HTMX, allowing the submission messages to be returned by the server as an HTML fragment and swapped into #message, replacing the hand-written fetch() and DOM update.
+ 
+### Design Decisions
+
+- Dylan
+  - - Dylan
+  - I chose to convert the registration submission to HTMX rather than the login submission. Registration fits HTMX's pattern better as the result is just a success or error message swapped into the same page. This means the server can return a small HTML fragment and the hand-written fetch() and DOM update can be removed, and so there is less code to maintain and fewer places for bugs. I chose registration over login because its result is just a message swapped into the same page, while a successful login redirects to /account and would need extra handling such as an HX-Redirect header.
