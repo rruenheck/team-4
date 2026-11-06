@@ -125,7 +125,7 @@ MongoDB "users" collection
 
 - Artemisia
   - I choose to use fetch() for the login and registration page. Since if I use the HTML form to display, our backend returns JSON and users will see the raw JSON which is not good looking and lack of feedback for them. Using fetch() will allow them to stay at the same page while get useful and clear responce of success or error messages.
-  - I choose to use Tailwind css to style four pages, home, login, register, account. An alternative could be the traditional CSS. Tailwind can makes the responsive styling faster, also it reduces the need for separate css rules. However, it will make the ejs files harder to read since it adds a lot of long class attributes. 
+  - I choose to use Tailwind css to style four pages, home, login, register, account. An alternative could be the traditional CSS. Tailwind can makes the responsive styling faster, also it reduces the need for separate css rules. However, it will make the ejs files harder to read since it adds a lot of long class attributes.
 
 - Ray
   - One design decision I made was to store our data in MongoDB rather than a local file. MongoDB handles concurrent writes safely, lets us query and update individual documents without loading everything, and keeps the data persistent independent of the app server. The alternative was a local .json file that we read and write with fs. That would be simpler, since it needs no database setup and the data is easy to inspect and reset, but it doesn’t handle simultaneous writes well and doesn’t scale past a small dataset which is why I ultimately went with MongoDB.
@@ -134,9 +134,12 @@ MongoDB "users" collection
 
 - changes
   - the registration submission now uses HTMX, allowing the submission messages to be returned by the server as an HTML fragment and swapped into #message, replacing the hand-written fetch() and DOM update.
- 
+
 ### Design Decisions
 
 - Dylan
   - - Dylan
   - I chose to convert the registration submission to HTMX rather than the login submission. Registration fits HTMX's pattern better as the result is just a success or error message swapped into the same page. This means the server can return a small HTML fragment and the hand-written fetch() and DOM update can be removed, and so there is less code to maintain and fewer places for bugs. I chose registration over login because its result is just a message swapped into the same page, while a successful login redirects to /account and would need extra handling such as an HX-Redirect header.
+
+- Ray
+  - This sprint I switched our user repository from the plain MongoDB driver to Mongoose. We could have kept the driver, since it already worked. I picked Mongoose because the schema checks that every user has an email and a password hash before it gets saved. The driver saved anything we gave it. Mongoose blocks records like that, and making email unique stops two accounts from using the same email. Keeping the driver would have meant doing all those checks by hand in the service. The cost was one more package, and Mongoose quietly drops fields that aren’t in the schema.

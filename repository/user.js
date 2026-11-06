@@ -1,14 +1,33 @@
-import { getDb } from "../db.js";
-import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
 
-const users = () => getDb().collection("users");
+const userSchema = new mongoose.Schema({
+  name: { type: String },
+  email: { type: String, required: true, unique: true },
+  passwordHash: { type: String, required: true },
+});
 
-export const findUser = (email) => users().findOne({ email });
+const User = mongoose.model("User", userSchema);
 
-export const findUserById = (id) => {
-  if (!ObjectId.isValid(id)) return null;
-  return users().findOne({ _id: new ObjectId(id) });
+export const findUser = (email) => User.findOne({ email }).lean();
+
+export const findById = (id) => {
+  if (!mongoose.isValidObjectId(id)) return null;
+  return User.findById(id).lean();
 };
 
-export const insert = async (user) =>
-  (await users().insertOne(user)).insertedId;
+export const getAll = () => User.find().lean();
+
+export const updateById = (id, data) => {
+  if (!mongoose.isValidObjectId(id)) return null;
+  return User.findByIdAndUpdate(id, data, {
+    new: true,
+    runValidators: true,
+  }).lean();
+};
+
+export const removeById = (id) => {
+  if (!mongoose.isValidObjectId(id)) return null;
+  return User.findByIdAndDelete(id).lean();
+};
+
+export const create = async (user) => (await User.create(user))._id;
