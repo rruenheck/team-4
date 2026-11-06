@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "build:css": "tailwindcss -i ./src/input.css -o ./public/style.css"
   },
   "repository": {
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.4",
-    "tailwindcss": "^4.3.4"
+    "tailwindcss": "^4.3.4",
+    "jest": "^30.5.2"
   }
 }

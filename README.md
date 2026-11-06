@@ -117,6 +117,7 @@ MongoDB "users" collection
 
 ### Design Decisions
 
+Sprint 2 
 - Dylan
   - I chose to implement the authentication routes in a separate file under the routes folder. The other acceptable method would have been to add them to the server file, but I chose to refrain from this in order to promote long-term readability and modularity practices. As our application grows, it will become extremely important that we separate behavior into multiple files, so that they become easier to find and the file navigation is more intuitive. This also supports the structure of a layered architecture, as each layer is meant to handle different responsibilities without interfering or having knowledge of the others.
 
@@ -134,9 +135,22 @@ MongoDB "users" collection
 
 - changes
   - the registration submission now uses HTMX, allowing the submission messages to be returned by the server as an HTML fragment and swapped into #message, replacing the hand-written fetch() and DOM update.
+  - added jest tests for every business rule in the service layer.
+ 
+- why:
+  - HTMX fits the registration behavior well and is more manageable than the hand-written fetch()
+  - test everybusiness rule in the service layer without a live database connection
+
+verify:
+- Jest tests
+  - install dependencies with 'npm install'
+  - run 'npm test' in the terminal with an expected result of 1 passing suite and 9 passing tests
+  - in the devcontainer's terminal, verify the tests also pass with database URL variables unset with 'env -u MONGO_URL -u MONGODB_URI npm test'
  
 ### Design Decisions
 
 - Dylan
-  - - Dylan
   - I chose to convert the registration submission to HTMX rather than the login submission. Registration fits HTMX's pattern better as the result is just a success or error message swapped into the same page. This means the server can return a small HTML fragment and the hand-written fetch() and DOM update can be removed, and so there is less code to maintain and fewer places for bugs. I chose registration over login because its result is just a message swapped into the same page, while a successful login redirects to /account and would need extra handling such as an HX-Redirect header.
+
+- Jackson
+  - One design decision I made was to mock the bcrypt and hashing test to remain consistent with the other tests as well as focusing on the service business rule. A reasonable alternative that could be taken would be to use real bcrypt to test by generating a hash for a known password, use the mock repository, and attempt a login with a different password because the mock doesn't explicitly prove that bcyrpt is actually comparing the passwords correctly. This can be flipped if advised to do so. 
