@@ -120,6 +120,7 @@ MongoDB "users" collection
 
 ### Design Decisions
 
+Sprint 2 
 - Dylan
   - I chose to implement the authentication routes in a separate file under the routes folder. The other acceptable method would have been to add them to the server file, but I chose to refrain from this in order to promote long-term readability and modularity practices. As our application grows, it will become extremely important that we separate behavior into multiple files, so that they become easier to find and the file navigation is more intuitive. This also supports the structure of a layered architecture, as each layer is meant to handle different responsibilities without interfering or having knowledge of the others.
 
@@ -130,3 +131,7 @@ MongoDB "users" collection
 
 - Ray
   - One design decision I made was to store our data in MongoDB rather than a local file. MongoDB handles concurrent writes safely, lets us query and update individual documents without loading everything, and keeps the data persistent independent of the app server. The alternative was a local .json file that we read and write with fs. That would be simpler, since it needs no database setup and the data is easy to inspect and reset, but it doesn’t handle simultaneous writes well and doesn’t scale past a small dataset which is why I ultimately went with MongoDB.
+
+Sprint 3
+- Jackson
+  - One design decision I made was to mock the bcrypt and hashing test to remain consistent with the other tests as well as focusing on the service business rule. A reasonable alternative that could be taken would be to use real bcrypt to test by generating a hash for a known password, use the mock repository, and attempt a login with a different password because the mock doesn't explicitly prove that bcyrpt is actually comparing the passwords correctly. This can be flipped if advised to do so. 
