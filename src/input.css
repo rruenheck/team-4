@@ -1,0 +1,27 @@
+
+@import "tailwindcss";
+
+@layer components {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fb;
+    color: #333;
+    margin: 0;
+  }
+
+  h1 {
+    color: #34495e;
+  }
+
+  .message-success {
+    color: rgb(13, 161, 13);
+  }
+
+  .message-error {
+    color: red;
+  }
+}

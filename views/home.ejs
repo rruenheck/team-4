@@ -2,22 +2,28 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
     <link rel="stylesheet" href="/style.css" />
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <ul>
-      <li>
-        <p><a href="/account">Account</a></p>
-      </li>
-
-      <li>
-        <p><a href="/login">Login</a></p>
-      </li>
-      <li>
-        <p><a href="/register">Register</a></p>
-      </li>
-    </ul>
+  <body class="min-h-screen p-4 sm:p-8">
+    <main class="max-w-3xl mx-auto">
+      <header class="flex flex-col gap-4 border-b-2 border-gray-300 pb-4 mb-6 sm:flex-row sm:justify-between sm:items-center">
+        <h1 class="text-2xl font-bold"><%= title %></h1>
+        <nav>
+          <ul class="flex flex-col gap-3 sm:flex-row sm:gap-6">
+            <li>
+              <a href="/account" class="text-blue-700 hover:underline">Account</a>
+            </li>
+            <li>
+              <a href="/login" class="text-blue-700 hover:underline">Login</a>
+            </li>
+            <li>
+              <a href="/register" class="text-blue-700 hover:underline">Register</a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+    </main>
   </body>
 </html>

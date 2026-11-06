@@ -2,15 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
     <link rel="stylesheet" href="/style.css" />
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <ul>
-      <li>Account ID: <%= account.id %></li>
-      <li>Name: <%= account.name || "Not provided" %></li>
-      <li>Email: <%= account.email %></li>
-    </ul>
+  <body class="min-h-screen p-4 sm:p-8">
+    <main class="max-w-md mx-auto">
+      <h1 class="text-2xl font-bold text-center mb-6"><%= title %></h1>
+      <ul class="bg-white rounded-lg shadow-md p-6 flex flex-col gap-4">
+        <li class="border-b border-gray-200 pb-2">Account ID: <%= account.id %></li>
+        <li class="border-b border-gray-200 pb-2">Name: <%= account.name || "Not provided" %></li>
+        <li>Email: <%= account.email %></li>
+      </ul>
+    </main>
   </body>
 </html>
