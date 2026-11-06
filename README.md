@@ -133,5 +133,17 @@ Sprint 2
   - One design decision I made was to store our data in MongoDB rather than a local file. MongoDB handles concurrent writes safely, lets us query and update individual documents without loading everything, and keeps the data persistent independent of the app server. The alternative was a local .json file that we read and write with fs. That would be simpler, since it needs no database setup and the data is easy to inspect and reset, but it doesn’t handle simultaneous writes well and doesn’t scale past a small dataset which is why I ultimately went with MongoDB.
 
 Sprint 3
+changes:
+- added jest tests for every business rule in the service layer.
+
+why:
+- test everybusiness rule in the service layer without a live database connection
+
+verify:
+- Jest tests
+  - install dependencies with 'npm install'
+  - run 'npm test' in the terminal with an expected result of 1 passing suite and 9 passing tests
+  - in the devcontainer's terminal, verify the tests also pass with database URL variables unset with 'env -u MONGO_URL -u MONGODB_URI npm test'
+
 - Jackson
   - One design decision I made was to mock the bcrypt and hashing test to remain consistent with the other tests as well as focusing on the service business rule. A reasonable alternative that could be taken would be to use real bcrypt to test by generating a hash for a known password, use the mock repository, and attempt a login with a different password because the mock doesn't explicitly prove that bcyrpt is actually comparing the passwords correctly. This can be flipped if advised to do so. 
