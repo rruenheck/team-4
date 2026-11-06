@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "start": "node server.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "build:css": "tailwindcss -i ./src/input.css -o ./public/style.css"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,8 @@
     "bcrypt@6.0.0": true
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.3.4",
+    "tailwindcss": "^4.3.4",
     "jest": "^30.5.2"
   }
 }
