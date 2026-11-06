@@ -14,7 +14,7 @@ export const register = async ({ name, email, password }) => {
     throw err;
   }
   const passwordHash = await bcrypt.hash(password, 10);
-  const id = await user.insert({ name, email, passwordHash });
+  const id = await user.create({ name, email, passwordHash });
 
   return { id, name, email };
 };
