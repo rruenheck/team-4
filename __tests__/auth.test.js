@@ -2,8 +2,8 @@ import { expect, jest, test } from "@jest/globals";
 
 jest.unstable_mockModule("../repository/user.js", () => ({
   findUser: jest.fn(),
-  insert: jest.fn(),
-  findUserById: jest.fn()
+  create: jest.fn(),
+  findById: jest.fn()
 }));
 
 jest.unstable_mockModule("bcrypt", () => ({
@@ -55,7 +55,7 @@ test("login rejects an incorrect password", async () => {
 });
 
 test("getAccount returns null when the account is not found", async () => {
-    user.findUserById.mockResolvedValueOnce(null);
+    user.findById.mockResolvedValueOnce(null);
     const result = await getAccount("missing-id");
     expect(result).toBeNull();
 });
@@ -63,8 +63,8 @@ test("getAccount returns null when the account is not found", async () => {
 test("register saves a new user with a hashed password", async () => {
     user.findUser.mockResolvedValueOnce(null);
     bcrypt.hash.mockResolvedValueOnce("fake-hash");
-    user.insert.mockResolvedValueOnce("user-123");
+    user.create.mockResolvedValueOnce("user-123");
     const result = await register({name: "Test User", email: "example@test.com", password: "123pass"});
-    expect(user.insert).toHaveBeenCalledWith({name: "Test User", email: "example@test.com", passwordHash: "fake-hash"});
+    expect(user.create).toHaveBeenCalledWith({name: "Test User", email: "example@test.com", passwordHash: "fake-hash"});
     expect(result).toEqual({id: "user-123", name: "Test User", email: "example@test.com"});
 });

@@ -117,7 +117,8 @@ MongoDB "users" collection
 
 ### Design Decisions
 
-Sprint 2 
+Sprint 2
+
 - Dylan
   - I chose to implement the authentication routes in a separate file under the routes folder. The other acceptable method would have been to add them to the server file, but I chose to refrain from this in order to promote long-term readability and modularity practices. As our application grows, it will become extremely important that we separate behavior into multiple files, so that they become easier to find and the file navigation is more intuitive. This also supports the structure of a layered architecture, as each layer is meant to handle different responsibilities without interfering or having knowledge of the others.
 
@@ -126,7 +127,7 @@ Sprint 2
 
 - Artemisia
   - I choose to use fetch() for the login and registration page. Since if I use the HTML form to display, our backend returns JSON and users will see the raw JSON which is not good looking and lack of feedback for them. Using fetch() will allow them to stay at the same page while get useful and clear responce of success or error messages.
-  - I choose to use Tailwind css to style four pages, home, login, register, account. An alternative could be the traditional CSS. Tailwind can makes the responsive styling faster, also it reduces the need for separate css rules. However, it will make the ejs files harder to read since it adds a lot of long class attributes. 
+  - I choose to use Tailwind css to style four pages, home, login, register, account. An alternative could be the traditional CSS. Tailwind can makes the responsive styling faster, also it reduces the need for separate css rules. However, it will make the ejs files harder to read since it adds a lot of long class attributes.
 
 - Ray
   - One design decision I made was to store our data in MongoDB rather than a local file. MongoDB handles concurrent writes safely, lets us query and update individual documents without loading everything, and keeps the data persistent independent of the app server. The alternative was a local .json file that we read and write with fs. That would be simpler, since it needs no database setup and the data is easy to inspect and reset, but it doesn’t handle simultaneous writes well and doesn’t scale past a small dataset which is why I ultimately went with MongoDB.
@@ -136,21 +137,25 @@ Sprint 2
 - changes
   - the registration submission now uses HTMX, allowing the submission messages to be returned by the server as an HTML fragment and swapped into #message, replacing the hand-written fetch() and DOM update.
   - added jest tests for every business rule in the service layer.
- 
+
 - why:
   - HTMX fits the registration behavior well and is more manageable than the hand-written fetch()
   - test everybusiness rule in the service layer without a live database connection
 
 verify:
+
 - Jest tests
   - install dependencies with 'npm install'
   - run 'npm test' in the terminal with an expected result of 1 passing suite and 9 passing tests
   - in the devcontainer's terminal, verify the tests also pass with database URL variables unset with 'env -u MONGO_URL -u MONGODB_URI npm test'
- 
+
 ### Design Decisions
 
 - Dylan
   - I chose to convert the registration submission to HTMX rather than the login submission. Registration fits HTMX's pattern better as the result is just a success or error message swapped into the same page. This means the server can return a small HTML fragment and the hand-written fetch() and DOM update can be removed, and so there is less code to maintain and fewer places for bugs. I chose registration over login because its result is just a message swapped into the same page, while a successful login redirects to /account and would need extra handling such as an HX-Redirect header.
 
 - Jackson
-  - One design decision I made was to mock the bcrypt and hashing test to remain consistent with the other tests as well as focusing on the service business rule. A reasonable alternative that could be taken would be to use real bcrypt to test by generating a hash for a known password, use the mock repository, and attempt a login with a different password because the mock doesn't explicitly prove that bcyrpt is actually comparing the passwords correctly. This can be flipped if advised to do so. 
+  - One design decision I made was to mock the bcrypt and hashing test to remain consistent with the other tests as well as focusing on the service business rule. A reasonable alternative that could be taken would be to use real bcrypt to test by generating a hash for a known password, use the mock repository, and attempt a login with a different password because the mock doesn't explicitly prove that bcyrpt is actually comparing the passwords correctly. This can be flipped if advised to do so.
+
+- Ray
+  - This sprint I switched our user repository from the plain MongoDB driver to Mongoose. We could have kept the driver, since it already worked. I picked Mongoose because the schema checks that every user has an email and a password hash before it gets saved. The driver saved anything we gave it. Mongoose blocks records like that, and making email unique stops two accounts from using the same email. Keeping the driver would have meant doing all those checks by hand in the service. The cost was one more package, and Mongoose quietly drops fields that aren’t in the schema.

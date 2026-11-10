@@ -1,7 +1,7 @@
 import * as user from "../repository/user.js";
 
 export const getAccount = async (id) => {
-  const savedUser = await user.findUserById(id);
+  const savedUser = await user.findById(id);
   if (!savedUser) return null;
 
   return {
