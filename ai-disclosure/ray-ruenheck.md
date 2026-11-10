@@ -9,3 +9,7 @@
 # sprint 2:fixes
 
 1. Used Ai for general syntax and asked how the code could be better
+
+# sprint 3
+
+1. Used Ai for general syntax and asked how the code could be better
