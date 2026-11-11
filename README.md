@@ -137,7 +137,20 @@ Sprint 2
 
 ## Sprint 3
 
+
+- Ray's changes
+  - Switched the user repository from the MongoDB driver to Mongoose
+  - Added a User schema with email and passwordHash marked required: true and email set to unique
+  - Repository exports findUser, findById, getAll, create, updateById and removeById, all are calling Mongoose model method
+  
+  - How to test
+    - npm install
+    - npm test
+    - start the app and register a new user, this will save and show a success message, same email will reject
+    - login with that created user and it will load your info.
+
 - changes
+
   - the registration submission now uses HTMX, allowing the submission messages to be returned by the server as an HTML fragment and swapped into #message, replacing the hand-written fetch() and DOM update.
   - added jest tests for every business rule in the service layer.
 
