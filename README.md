@@ -76,6 +76,9 @@
   - input "test@test.com" for the email and "123pass" for the password to test for a valid log in, should redirect to the account page
   - you have now registered an account and logged in successfully
   - stop the server (Ctrl+C), start it again with `node server.js`, and log in with "test@test.com" / "123pass" again, it should still work
+  - go back to the account page
+  - attempt to enter a new name for the account, expect it to work and save to the name field
+  - in the browser DevTools, go under the form that says action="/account/..." and change the user ID to something else. Then attempt to change the name again. This time it should reject with "You cannot edit another person's account"
 
 ## System Diagram
 
