@@ -83,6 +83,7 @@
 ## System Diagram
 
 ```
+
 Browser
 |
 v
@@ -90,36 +91,57 @@ server.js
 |-- static --> public/style.css
 |-- GET / --> redirect to /home
 |-- GET /home --> views/home.ejs
-|-- GET /account --> views/account.ejs
 |
-v
-routes/auth.js
-|-- GET /login --> views/login.ejs
-|-- GET /register --> views/register.ejs
-|-- POST /login
-|-- POST /register
+|-- routes/auth.js
+|   |-- GET /login --> views/login.ejs
+|   |-- GET /register --> views/register.ejs
+|   |-- POST /login
+|   |-- POST /register
+|       |
+|       v
+|   controller/auth.js
+|   (loginUser, registerUser)
+|       |-- registerUser
+|       |   --> views/partials/register-message.ejs
+|       v
+|   service/auth.js <--> bcrypt
+|   (login, register)
+|       |
+|       v
+|   repository/user.js
 |
-v
-controller/auth.js
-(loginUser, registerUser)
-|
-v
-service/auth.js <--> bcrypt
-(login, register)
-__tests__/auth.test.js (Jest)
- -- tests --> service/auth.js
- -- mocks --> repository/user.js
- -- mocks --> bcrypt
-|
-v
+|-- routes/account.js
+    |-- GET /account --> showAccount
+    |-- POST /account/:id/name --> updateAccName
+        |
+        v
+    controller/account.js
+    (showAccount, updateAccName)
+        |
+        v
+    service/account.js
+    |-- getAccount --> user.findById
+    |-- updateName --> user.updateById
+        |
+        v
+    repository/user.js
+
 repository/user.js
-(findUser, insert)
+(findUser, findById, getAll, create,
+ updateById, removeById)
 |
 v
-db.js
+Mongoose User model
+(email, passwordHash required)
 |
 v
 MongoDB "users" collection
+
+__tests__/auth.test.js (Jest)
+|-- tests --> service/auth.js
+|-- mocks --> repository/user.js
+|-- mocks --> bcrypt
+
 ```
 
 ### Design Decisions
@@ -134,7 +156,6 @@ Sprint 2
 
 - Artemisia
   - I choose to use fetch() for the login and registration page. Since if I use the HTML form to display, our backend returns JSON and users will see the raw JSON which is not good looking and lack of feedback for them. Using fetch() will allow them to stay at the same page while get useful and clear responce of success or error messages.
-  - I choose to use Tailwind css to style four pages, home, login, register, account. An alternative could be the traditional CSS. Tailwind can makes the responsive styling faster, also it reduces the need for separate css rules. However, it will make the ejs files harder to read since it adds a lot of long class attributes.
 
 - Ray
   - One design decision I made was to store our data in MongoDB rather than a local file. MongoDB handles concurrent writes safely, lets us query and update individual documents without loading everything, and keeps the data persistent independent of the app server. The alternative was a local .json file that we read and write with fs. That would be simpler, since it needs no database setup and the data is easy to inspect and reset, but it doesn’t handle simultaneous writes well and doesn’t scale past a small dataset which is why I ultimately went with MongoDB.
@@ -157,6 +178,8 @@ Sprint 2
 
   - the registration submission now uses HTMX, allowing the submission messages to be returned by the server as an HTML fragment and swapped into #message, replacing the hand-written fetch() and DOM update.
   - added jest tests for every business rule in the service layer.
+  - added MongoDB operations for user data. POST /register creates users, POST /login and GET /account read user data, and POST /account/:id/name updates user names.
+  - updated home, login, register, and account pages with Tailwind CSS for different screen sizes. Use browser DevTools to check mobile and desktop views. Run npm run build:css to rebuild the CSS.
 
 - why:
   - HTMX fits the registration behavior well and is more manageable than the hand-written fetch()
@@ -179,3 +202,6 @@ verify:
 
 - Ray
   - This sprint I switched our user repository from the plain MongoDB driver to Mongoose. We could have kept the driver, since it already worked. I picked Mongoose because the schema checks that every user has an email and a password hash before it gets saved. The driver saved anything we gave it. Mongoose blocks records like that, and making email unique stops two accounts from using the same email. Keeping the driver would have meant doing all those checks by hand in the service. The cost was one more package, and Mongoose quietly drops fields that aren’t in the schema.
+
+- Artemisia
+  - I choose to use Tailwind css to style four pages, home, login, register, account. An alternative could be the traditional CSS. Tailwind allows me to use responsive utility classes directly in the EJS files, so these four pages can adjust to different screen sizes without writing separate media queries for each page. However, it will make the ejs files harder to read since it adds a lot of long class attributes. If I choose to use the traditional CSS, I need to write more CSS rules to keep the styling consistent for all four pages.
