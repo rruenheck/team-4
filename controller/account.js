@@ -1,4 +1,4 @@
-import { getAccount } from "../service/account.js";
+import { getAccount, updateName } from "../service/account.js";
 
 export const showAccount = async (req, res, next) => {
   if (!req.session.userId) {
@@ -17,5 +17,19 @@ export const showAccount = async (req, res, next) => {
     accountError.status = 500;
     accountError.cause = err;
     return next(accountError);
+  }
+};
+
+export const updateAccName = async (req, res, next) => {
+  if (!req.session.userId) {
+    return res.redirect("/login");
+  }
+
+  try {
+    await updateName(req.params.id, req.session.userId, req.body.name);
+
+    return res.redirect("/account");
+  } catch (err) {
+    return next(err);
   }
 };
