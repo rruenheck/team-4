@@ -106,6 +106,10 @@ controller/auth.js
 v
 service/auth.js <--> bcrypt
 (login, register)
+__tests__/auth.test.js (Jest)
+ -- tests --> service/auth.js
+ -- mocks --> repository/user.js
+ -- mocks --> bcrypt
 |
 v
 repository/user.js
@@ -171,7 +175,7 @@ verify:
   - I chose to convert the registration submission to HTMX rather than the login submission. Registration fits HTMX's pattern better as the result is just a success or error message swapped into the same page. This means the server can return a small HTML fragment and the hand-written fetch() and DOM update can be removed, and so there is less code to maintain and fewer places for bugs. I chose registration over login because its result is just a message swapped into the same page, while a successful login redirects to /account and would need extra handling such as an HX-Redirect header.
 
 - Jackson
-  - One design decision I made was to mock the bcrypt and hashing test to remain consistent with the other tests as well as focusing on the service business rule. A reasonable alternative that could be taken would be to use real bcrypt to test by generating a hash for a known password, use the mock repository, and attempt a login with a different password because the mock doesn't explicitly prove that bcyrpt is actually comparing the passwords correctly. This can be flipped if advised to do so.
+  - One design decision I made was to mock the bcrypt and hashing test to remain consistent with the other tests as well as focusing on the service business rule. We also mock it because we can control the password comparison resullt and test our logion logic directly. A reasonable alternative that could be taken would be to use real bcrypt to test by generating a hash for a known password, use the mock repository, and attempt a login with a different password because the mock doesn't explicitly prove that bcyrpt is actually comparing the passwords correctly. The reason for mocking the bcrypt is because it is faster than actually testing a real bcrypt which is purposefully slower. 
 
 - Ray
   - This sprint I switched our user repository from the plain MongoDB driver to Mongoose. We could have kept the driver, since it already worked. I picked Mongoose because the schema checks that every user has an email and a password hash before it gets saved. The driver saved anything we gave it. Mongoose blocks records like that, and making email unique stops two accounts from using the same email. Keeping the driver would have meant doing all those checks by hand in the service. The cost was one more package, and Mongoose quietly drops fields that aren’t in the schema.
