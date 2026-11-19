@@ -132,7 +132,7 @@ repository/user.js
 |
 v
 Mongoose User model
-(email, passwordHash required)
+(email: String, passwordHash: String required, role: {member: String, admin: String})
 |
 v
 MongoDB "users" collection
@@ -162,12 +162,11 @@ Sprint 2
 
 ## Sprint 3
 
-
 - Ray's changes
   - Switched the user repository from the MongoDB driver to Mongoose
   - Added a User schema with email and passwordHash marked required: true and email set to unique
   - Repository exports findUser, findById, getAll, create, updateById and removeById, all are calling Mongoose model method
-  
+
   - How to test
     - npm install
     - npm test
@@ -175,7 +174,6 @@ Sprint 2
     - login with that created user and it will load your info.
 
 - changes
-
   - the registration submission now uses HTMX, allowing the submission messages to be returned by the server as an HTML fragment and swapped into #message, replacing the hand-written fetch() and DOM update.
   - added jest tests for every business rule in the service layer.
   - added MongoDB operations for user data. POST /register creates users, POST /login and GET /account read user data, and POST /account/:id/name updates user names.
@@ -198,10 +196,35 @@ verify:
   - I chose to convert the registration submission to HTMX rather than the login submission. Registration fits HTMX's pattern better as the result is just a success or error message swapped into the same page. This means the server can return a small HTML fragment and the hand-written fetch() and DOM update can be removed, and so there is less code to maintain and fewer places for bugs. I chose registration over login because its result is just a message swapped into the same page, while a successful login redirects to /account and would need extra handling such as an HX-Redirect header.
 
 - Jackson
-  - One design decision I made was to mock the bcrypt and hashing test to remain consistent with the other tests as well as focusing on the service business rule. We also mock it because we can control the password comparison resullt and test our logion logic directly. A reasonable alternative that could be taken would be to use real bcrypt to test by generating a hash for a known password, use the mock repository, and attempt a login with a different password because the mock doesn't explicitly prove that bcyrpt is actually comparing the passwords correctly. The reason for mocking the bcrypt is because it is faster than actually testing a real bcrypt which is purposefully slower. 
+  - One design decision I made was to mock the bcrypt and hashing test to remain consistent with the other tests as well as focusing on the service business rule. We also mock it because we can control the password comparison resullt and test our logion logic directly. A reasonable alternative that could be taken would be to use real bcrypt to test by generating a hash for a known password, use the mock repository, and attempt a login with a different password because the mock doesn't explicitly prove that bcyrpt is actually comparing the passwords correctly. The reason for mocking the bcrypt is because it is faster than actually testing a real bcrypt which is purposefully slower.
 
 - Ray
   - This sprint I switched our user repository from the plain MongoDB driver to Mongoose. We could have kept the driver, since it already worked. I picked Mongoose because the schema checks that every user has an email and a password hash before it gets saved. The driver saved anything we gave it. Mongoose blocks records like that, and making email unique stops two accounts from using the same email. Keeping the driver would have meant doing all those checks by hand in the service. The cost was one more package, and Mongoose quietly drops fields that aren’t in the schema.
 
 - Artemisia
   - I choose to use Tailwind css to style four pages, home, login, register, account. An alternative could be the traditional CSS. Tailwind allows me to use responsive utility classes directly in the EJS files, so these four pages can adjust to different screen sizes without writing separate media queries for each page. However, it will make the ejs files harder to read since it adds a lot of long class attributes. If I choose to use the traditional CSS, I need to write more CSS rules to keep the styling consistent for all four pages.
+
+# Sprint-4
+
+- How to make an admin account
+  - follow the steps for making a user
+  - go to admin page
+  - enter admin password
+  - click submit
+  - will change account to have admin capabilities as well as maintain member
+    capabilities
+
+- Ray's changes
+- Added role field to the User model, this field is an Object that contains
+  two fields, member: String and admin: String
+
+### Design Decisions
+
+- Ray
+- I was tasked with making a change to the User model, the design decision was
+  to add a role field to User and include member and admin in that field. One
+  alternative to that was to add more roles to the role. This would add a
+  broader selection of types of users, and allow for different capabilities a
+  user can do based on their separate roles. I chose to keep it simple to just
+  two roles. I felt that with the scope of our project, only 2 roles was
+  necessary.
