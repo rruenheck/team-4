@@ -78,7 +78,9 @@
   - stop the server (Ctrl+C), start it again with `node server.js`, and log in with "test@test.com" / "123pass" again, it should still work
   - go back to the account page
   - attempt to enter a new name for the account, expect it to work and save to the name field
-  - in the browser DevTools, go under the form that says action="/account/..." and change the user ID to something else. Then attempt to change the name again. This time it should reject with "You cannot edit another person's account"
+  - in the browser DevTools, go under the form that says `action="/account/..."` and change the user ID to something else. Then attempt to change the name again. This time it should reject with "Account not found"
+  - now go and register another user account and save that id
+  - login back into your first account and this time in DevTools change the `action="/account/..."` ID to the actual ID of the second account you just made. Now it should reject with "You cannot edit another person's account".
 
 ## System Diagram
 
@@ -218,6 +220,9 @@ verify:
 - Added role field to the User model, this field is an Object that contains
   two fields, member: String and admin: String
 
+- Changes
+  - Updating names in the account page now checks for the proper owner and also utilizes the roles to give admins special permission to also change the field
+
 ### Design Decisions
 
 - Ray
@@ -228,3 +233,6 @@ verify:
   user can do based on their separate roles. I chose to keep it simple to just
   two roles. I felt that with the scope of our project, only 2 roles was
   necessary.
+
+- ## Dylan
+  - I chose to make changing a user's name on the account page reject with a 404 instead of a 403 when using an account that does not actually exist. Previously this was the method used to test the behavior and we rejected with a 403 which is an easy to use and straightforward alternative to test if the inputs on the website actually reach the service layer checks, but now with the proper role management and authorization checks implemented I went with this to distinguish between rejecting a nonexistent account and rejecting an existing account without permission.
