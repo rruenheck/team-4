@@ -36,3 +36,15 @@ export const updateName = async (id, loggedInUserId, name) => {
     throw err;
   }
 };
+
+export const makeAdmin = async (id) => {
+  const updatedUser = await user.updateById(id, { "role.admin": true });
+
+  if (!updatedUser) {
+    const err = new Error("Account not found");
+    err.status = 404;
+    throw err;
+  }
+
+  return updatedUser;
+};
