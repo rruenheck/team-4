@@ -4,7 +4,10 @@ const userSchema = new mongoose.Schema({
   name: { type: String },
   email: { type: String, required: true, unique: true },
   passwordHash: { type: String, required: true },
-  role: { member: Boolean, admin: Boolean },
+  role: {
+    member: { type: Boolean, default: true },
+    admin: { type: Boolean, default: false },
+  },
 });
 
 const User = mongoose.model("User", userSchema);

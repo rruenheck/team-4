@@ -1,5 +1,8 @@
-import { getAccount, updateName } from "../service/account.js";
-
+import {
+  getAccount,
+  updateName,
+  makeAdmin as makeAdminService,
+} from "../service/account.js";
 export const showAccount = async (req, res, next) => {
   if (!req.session.userId) {
     return res.redirect("/login");
@@ -31,5 +34,17 @@ export const updateAccName = async (req, res, next) => {
     return res.redirect("/account");
   } catch (err) {
     return next(err);
+  }
+};
+
+export const makeAdmin = async (req, res, next) => {
+  try {
+    const { passwordHash, ...user } = await makeAdminService(req.params.id);
+    res.status(200).json(user);
+  } catch (err) {
+    if (err.status && err.status < 500) {
+      return res.status(err.status).json({ error: err.message });
+    }
+    next(err);
   }
 };
