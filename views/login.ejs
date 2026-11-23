@@ -39,7 +39,7 @@
         <button type="submit" class="bg-blue-700 text-white rounded px-4 py-2 hover:bg-blue-800">Login</button>
       </form>
 
-    <p id="message" class="mt-4 text-center"></p>
+    <p id="message" role="alert" class="mt-4 text-center"></p>
 
     <script>
       const form = document.getElementById("login-form");
@@ -66,11 +66,11 @@
             window.location.href = "/account";
           } else {
             message.textContent = data.error || "Login failed";
-            message.style.color = "red";
+            message.className = "mt-4 text-center message-error";
           }
         } catch (err) {
           message.textContent = "Could not connect to the server";
-          message.style.color = "red";
+          message.className = "mt-4 text-center message-error";
         }
       });
     </script>
