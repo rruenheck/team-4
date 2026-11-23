@@ -234,6 +234,14 @@ verify:
 - Added role="alert" to the error message and updated the error styling to use the message error class.
 - Added tabindex="-1" to the result message and an HTMX event listener to move focus to the message after a submission.
 
+- Jackson changes
+- Added password confirmation during registration
+- Added server-side validation for mismatched passwords
+- added a public GET/health endpoint
+- updated system diagram
+test:
+- Confirmed mismatched passwords are rejected with npm test run
+- Confirmed GET/health returns `{"status":"ok"}`
 
 ## Accessibility Audit
 - I tested the accessibility for Home, Login, Register and Account page. I first checked the keyboard only navigation. All buttons, links and input fields can be accessed with Tab, Enter also works well. 
