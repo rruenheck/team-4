@@ -204,7 +204,7 @@ verify:
 - Artemisia
   - I choose to use Tailwind css to style four pages, home, login, register, account. An alternative could be the traditional CSS. Tailwind allows me to use responsive utility classes directly in the EJS files, so these four pages can adjust to different screen sizes without writing separate media queries for each page. However, it will make the ejs files harder to read since it adds a lot of long class attributes. If I choose to use the traditional CSS, I need to write more CSS rules to keep the styling consistent for all four pages.
 
-# Sprint-4
+## Sprint-4
 
 - How to make an admin account
   - follow the steps for making a user
@@ -218,6 +218,26 @@ verify:
 - Added role field to the User model, this field is an Object that contains
   two fields, member: String and admin: String
 
+- Artemisia's changes
+- Change the color for error and success message
+- Added role="alert" to the error message and updated the error styling to use the message error class.
+- Added tabindex="-1" to the result message and an HTMX event listener to move focus to the message after a submission.
+
+
+## Accessibility Audit
+- I tested the accessibility for Home, Login, Register and Account page. I first checked the keyboard only navigation. All buttons, links and input fields can be accessed with Tab, Enter also works well. 
+For the second part, I improved the accessibility by letting the focus land to the input field when there’s an input error. For example, if the user enters “aaa” in the Email input field and pressed Login, the focus will back to the input field of Email and an error message will occur since this is not a valid email address. 
+Every input has a real label. Yes, there’re labels for the input fields for all the pages.
+I checked the color for the four pages using WebAIM Contrast Checker and changed some color, so all tested colors meet the WCAG AA 4.5:1 requirement for normal text.
+Login/Register button – 6.83:1
+Login/Register button hover - 8.82:1
+Success message – 5.79:1
+Error message – 7.49:1
+Body text – 11.78:1
+Account button – 12.63:1
+To check the accessibility, run the webpage and navigate through the pages using only keyboard. Submit the Register form using incorrect email and press Register to check whether the focus moves back to the Email input field. Also use WebAIM to check the color of button and text. 
+
+
 ### Design Decisions
 
 - Ray
@@ -228,3 +248,6 @@ verify:
   user can do based on their separate roles. I chose to keep it simple to just
   two roles. I felt that with the scope of our project, only 2 roles was
   necessary.
+
+- Artemisia
+- I decided to add a consistent focus visible outline to interactive elements through src/input.css. A possible alternative would be adding individual Tailwind focus classes to each button, link, and input field. However, the shared CSS rule is easier to maintain because our application has multiple pages using the same styles. The alternative would require editing each page separately and could lead to inconsistent focus indicators if some elements were missed.

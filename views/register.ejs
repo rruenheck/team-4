@@ -48,10 +48,17 @@
         <button type="submit" class="bg-blue-700 text-white rounded px-4 py-2 hover:bg-blue-800">Register</button>
       </form>
 
-      <p id="message" aria-live="polite" class="mt-4 text-center"></p>
+      <p id="message" aria-live="polite" tabindex="-1" class="mt-4 text-center"></p>
 
       <p class="mt-4 text-center"><a href="/login" class="text-blue-700 hover:underline">Back to login</a></p>
       <p class="mt-2 text-center"><a href="/home" class="text-blue-700 hover:underline">Home</a></p>
     </main>
+    <script>
+      document.body.addEventListener("htmx:afterSwap", function (event) {
+        if (event.detail.target.id === "message") {
+          event.detail.target.focus();
+        }
+      });
+    </script>
   </body>
 </html>
