@@ -17,12 +17,12 @@ const { getAccount } = await import("../service/account.js");
 
 test("register rejects a missing email", async () => {
     await expect(
-        register({name: "Test User", password: "123pass"})).rejects.toThrow("Email and password required");
+        register({name: "Test User", password: "123pass", confirmPassword: "123pass"})).rejects.toThrow("Email and password required");
 });
 
 test("register rejects a missing password", async () => {
     await expect(
-        register({name: "Test User", email: "example@test.com"})).rejects.toThrow("Email and password required");
+        register({name: "Test User", email: "example@test.com", confirmPassword:"123pass"})).rejects.toThrow("Email and password required");
 });
 
 test("login rejects a missing email", async () => {
@@ -39,7 +39,7 @@ test("register rejects an existing email", async () => {
     const existingUser = {email: "example@test.com"};
     user.findUser.mockResolvedValueOnce(existingUser);
     await expect(
-        register({name: "Test User", email: "example@test.com", password: "123pass"})).rejects.toThrow("Email already registered");
+        register({name: "Test User", email: "example@test.com", password: "123pass", confirmPassword:"123pass"})).rejects.toThrow("Email already registered");
 });
 
 test("login rejects an unregistered email", async () => {
@@ -64,7 +64,18 @@ test("register saves a new user with a hashed password", async () => {
     user.findUser.mockResolvedValueOnce(null);
     bcrypt.hash.mockResolvedValueOnce("fake-hash");
     user.create.mockResolvedValueOnce("user-123");
-    const result = await register({name: "Test User", email: "example@test.com", password: "123pass"});
+    const result = await register({name: "Test User", email: "example@test.com", password: "123pass", confirmPassword: "123pass"});
     expect(user.create).toHaveBeenCalledWith({name: "Test User", email: "example@test.com", passwordHash: "fake-hash"});
     expect(result).toEqual({id: "user-123", name: "Test User", email: "example@test.com"});
+});
+
+test("register rejects passwords that do not match", async()=> {
+    await expect(
+        register({
+            name:"Test User",
+            email:"example@test.com",
+            password: "123pass",
+            confirmPassword:"123pas"
+        }),
+    ).rejects.toThrow("Passwords do not match");
 });
