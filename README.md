@@ -78,7 +78,9 @@
   - stop the server (Ctrl+C), start it again with `node server.js`, and log in with "test@test.com" / "123pass" again, it should still work
   - go back to the account page
   - attempt to enter a new name for the account, expect it to work and save to the name field
-  - in the browser DevTools, go under the form that says action="/account/..." and change the user ID to something else. Then attempt to change the name again. This time it should reject with "You cannot edit another person's account"
+  - in the browser DevTools, go under the form that says `action="/account/..."` and change the user ID to something else. Then attempt to change the name again. This time it should reject with "Account not found"
+  - now go and register another user account and save that id
+  - login back into your first account and this time in DevTools change the `action="/account/..."` ID to the actual ID of the second account you just made. Now it should reject with "You cannot edit another person's account".
 
 ## System Diagram
 
@@ -229,6 +231,11 @@ verify:
 - Added role field to the User model, this field is an Object that contains
   two fields, member: String and admin: String
 
+- Dylan's changes
+  - Updating names in the account page now checks for the proper owner and also utilizes the roles to give admins special permission to also change the field
+  - When the user attempts to update the name using a valid user id that is not the account owner or an admin it rejects with 403
+  - When the user attempts to update the name using an invalid user id it rejects with 404
+
 - Artemisia's changes
 - Change the color for error and success message
 - Added role="alert" to the error message and updated the error styling to use the message error class.
@@ -244,18 +251,18 @@ test:
 - Confirmed GET/health returns `{"status":"ok"}`
 
 ## Accessibility Audit
-- I tested the accessibility for Home, Login, Register and Account page. I first checked the keyboard only navigation. All buttons, links and input fields can be accessed with Tab, Enter also works well. 
-For the second part, I improved the accessibility by letting the focus land to the input field when there’s an input error. For example, if the user enters “aaa” in the Email input field and pressed Login, the focus will back to the input field of Email and an error message will occur since this is not a valid email address. 
-Every input has a real label. Yes, there’re labels for the input fields for all the pages.
-I checked the color for the four pages using WebAIM Contrast Checker and changed some color, so all tested colors meet the WCAG AA 4.5:1 requirement for normal text.
-Login/Register button – 6.83:1
-Login/Register button hover - 8.82:1
-Success message – 5.79:1
-Error message – 7.49:1
-Body text – 11.78:1
-Account button – 12.63:1
-To check the accessibility, run the webpage and navigate through the pages using only keyboard. Submit the Register form using incorrect email and press Register to check whether the focus moves back to the Email input field. Also use WebAIM to check the color of button and text. 
 
+- I tested the accessibility for Home, Login, Register and Account page. I first checked the keyboard only navigation. All buttons, links and input fields can be accessed with Tab, Enter also works well.
+  For the second part, I improved the accessibility by letting the focus land to the input field when there’s an input error. For example, if the user enters “aaa” in the Email input field and pressed Login, the focus will back to the input field of Email and an error message will occur since this is not a valid email address.
+  Every input has a real label. Yes, there’re labels for the input fields for all the pages.
+  I checked the color for the four pages using WebAIM Contrast Checker and changed some color, so all tested colors meet the WCAG AA 4.5:1 requirement for normal text.
+  Login/Register button – 6.83:1
+  Login/Register button hover - 8.82:1
+  Success message – 5.79:1
+  Error message – 7.49:1
+  Body text – 11.78:1
+  Account button – 12.63:1
+  To check the accessibility, run the webpage and navigate through the pages using only keyboard. Submit the Register form using incorrect email and press Register to check whether the focus moves back to the Email input field. Also use WebAIM to check the color of button and text.
 
 ### Design Decisions
 
@@ -267,6 +274,9 @@ To check the accessibility, run the webpage and navigate through the pages using
   user can do based on their separate roles. I chose to keep it simple to just
   two roles. I felt that with the scope of our project, only 2 roles was
   necessary.
+
+- Dylan
+  - I chose to make changing a user's name on the account page reject with a 404 instead of a 403 when using an account that does not actually exist. Previously this was the method used to test the behavior and we rejected with a 403 which is an easy to use and straightforward alternative to test if the inputs on the website actually reach the service layer checks, but now with the proper role management and authorization checks implemented I went with this to distinguish between rejecting a nonexistent account (404) and rejecting an existing account without permission (403). This is not a 401 because a session must have been created and the user must be authenticated to reach the account page. When they try to update the name using an invalid id the client requests and does not receive the resource from the server and so it rejects with 404.
 
 - Artemisia
 - I decided to add a consistent focus visible outline to interactive elements through src/input.css. A possible alternative would be adding individual Tailwind focus classes to each button, link, and input field. However, the shared CSS rule is easier to maintain because our application has multiple pages using the same styles. The alternative would require editing each page separately and could lead to inconsistent focus indicators if some elements were missed.

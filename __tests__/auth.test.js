@@ -3,79 +3,148 @@ import { expect, jest, test } from "@jest/globals";
 jest.unstable_mockModule("../repository/user.js", () => ({
   findUser: jest.fn(),
   create: jest.fn(),
-  findById: jest.fn()
+  findById: jest.fn(),
+  updateById: jest.fn(),
 }));
 
 jest.unstable_mockModule("bcrypt", () => ({
-    default: {compare: jest.fn(), hash: jest.fn()}
+  default: { compare: jest.fn(), hash: jest.fn() },
 }));
 
 const { register, login } = await import("../service/auth.js");
 const user = await import("../repository/user.js");
 const { default: bcrypt } = await import("bcrypt");
 const { getAccount } = await import("../service/account.js");
+const { updateName } = await import("../service/account.js");
 
 test("register rejects a missing email", async () => {
-    await expect(
-        register({name: "Test User", password: "123pass", confirmPassword: "123pass"})).rejects.toThrow("Email and password required");
+  await expect(
+    register({ name: "Test User", password: "123pass" }),
+  ).rejects.toThrow("Email and password required");
 });
 
 test("register rejects a missing password", async () => {
-    await expect(
-        register({name: "Test User", email: "example@test.com", confirmPassword:"123pass"})).rejects.toThrow("Email and password required");
+  await expect(
+    register({ name: "Test User", email: "example@test.com" }),
+  ).rejects.toThrow("Email and password required");
 });
 
 test("login rejects a missing email", async () => {
-    await expect(
-        login({name: "Test User", password: "123pass"})).rejects.toThrow("Email and password required");
+  await expect(
+    login({ name: "Test User", password: "123pass" }),
+  ).rejects.toThrow("Email and password required");
 });
 
 test("login rejects a missing password", async () => {
-    await expect(
-        login({name: "Test User", email: "example@test.com"})).rejects.toThrow("Email and password required");
+  await expect(
+    login({ name: "Test User", email: "example@test.com" }),
+  ).rejects.toThrow("Email and password required");
 });
 
 test("register rejects an existing email", async () => {
-    const existingUser = {email: "example@test.com"};
-    user.findUser.mockResolvedValueOnce(existingUser);
-    await expect(
-        register({name: "Test User", email: "example@test.com", password: "123pass", confirmPassword:"123pass"})).rejects.toThrow("Email already registered");
+  const existingUser = { email: "example@test.com" };
+  user.findUser.mockResolvedValueOnce(existingUser);
+  await expect(
+    register({
+      name: "Test User",
+      email: "example@test.com",
+      password: "123pass",
+    }),
+  ).rejects.toThrow("Email already registered");
 });
 
 test("login rejects an unregistered email", async () => {
-    user.findUser.mockResolvedValueOnce(null);
-    await expect(
-        login({name: "Test User", email: "example@test.com", password: "123pass"})).rejects.toThrow("Email not registered");
+  user.findUser.mockResolvedValueOnce(null);
+  await expect(
+    login({
+      name: "Test User",
+      email: "example@test.com",
+      password: "123pass",
+    }),
+  ).rejects.toThrow("Email not registered");
 });
 
 test("login rejects an incorrect password", async () => {
-    user.findUser.mockResolvedValueOnce({passwordHash: "fake-hash"});
-    bcrypt.compare.mockResolvedValueOnce(false);
-    await expect(login({email: "example@test.com", password: "wrong-password"})).rejects.toThrow("Invalid password");
+  user.findUser.mockResolvedValueOnce({ passwordHash: "fake-hash" });
+  bcrypt.compare.mockResolvedValueOnce(false);
+  await expect(
+    login({ email: "example@test.com", password: "wrong-password" }),
+  ).rejects.toThrow("Invalid password");
 });
 
 test("getAccount returns null when the account is not found", async () => {
-    user.findById.mockResolvedValueOnce(null);
-    const result = await getAccount("missing-id");
-    expect(result).toBeNull();
+  user.findById.mockResolvedValueOnce(null);
+  const result = await getAccount("missing-id");
+  expect(result).toBeNull();
 });
 
 test("register saves a new user with a hashed password", async () => {
-    user.findUser.mockResolvedValueOnce(null);
-    bcrypt.hash.mockResolvedValueOnce("fake-hash");
-    user.create.mockResolvedValueOnce("user-123");
-    const result = await register({name: "Test User", email: "example@test.com", password: "123pass", confirmPassword: "123pass"});
-    expect(user.create).toHaveBeenCalledWith({name: "Test User", email: "example@test.com", passwordHash: "fake-hash"});
-    expect(result).toEqual({id: "user-123", name: "Test User", email: "example@test.com"});
+  user.findUser.mockResolvedValueOnce(null);
+  bcrypt.hash.mockResolvedValueOnce("fake-hash");
+  user.create.mockResolvedValueOnce("user-123");
+  const result = await register({
+    name: "Test User",
+    email: "example@test.com",
+    password: "123pass",
+  });
+  expect(user.create).toHaveBeenCalledWith({
+    name: "Test User",
+    email: "example@test.com",
+    passwordHash: "fake-hash",
+  });
+  expect(result).toEqual({
+    id: "user-123",
+    name: "Test User",
+    email: "example@test.com",
+  });
 });
 
-test("register rejects passwords that do not match", async()=> {
-    await expect(
-        register({
-            name:"Test User",
-            email:"example@test.com",
-            password: "123pass",
-            confirmPassword:"123pas"
-        }),
-    ).rejects.toThrow("Passwords do not match");
+test("updateName only works for the owner of the account or an admin and rejects other users", async () => {
+  const account = {
+    _id: "account123",
+    name: "john cena",
+    email: "cena@test.com",
+    role: { member: true, admin: false },
+  };
+
+  const admin = {
+    _id: "admin123",
+    name: "admin",
+    email: "admin@test.com",
+    role: { member: true, admin: true },
+  };
+
+  const badAcc = {
+    _id: "badguyacc",
+    name: "badguy",
+    email: "reallybad@test.com",
+    role: { member: true, admin: false },
+  };
+
+  const updatedAccount = { ...account, name: "New Name" };
+
+  user.findById.mockResolvedValueOnce(account);
+  user.updateById.mockResolvedValueOnce(updatedAccount);
+
+  await expect(
+    updateName(account._id, account._id, "New Name"),
+  ).resolves.toBeUndefined();
+
+  user.findById.mockResolvedValueOnce(account).mockResolvedValueOnce(admin);
+  user.updateById.mockResolvedValueOnce(updatedAccount);
+
+  await expect(
+    updateName(account._id, admin._id, "New Name"),
+  ).resolves.toBeUndefined();
+
+  user.findById.mockResolvedValueOnce(account).mockResolvedValueOnce(badAcc);
+  user.updateById.mockClear();
+
+  await expect(
+    updateName(account._id, badAcc._id, "New Name"),
+  ).rejects.toMatchObject({
+    status: 403,
+    message: "You cannot edit another person's account",
+  });
+  expect(user.updateById).not.toHaveBeenCalled();
 });

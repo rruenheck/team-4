@@ -11,8 +11,27 @@ export const getAccount = async (id) => {
   };
 };
 
+const isAdmin = async (id) => {
+  const actor = await user.findById(id);
+  return actor?.role?.admin === true;
+};
+
+const isOwnerOrAdmin = async (account, id) => {
+  if (account._id.toString() === id) return true;
+  return isAdmin(id);
+};
+
+const accountNotFound = () => {
+  const err = new Error("Account not found");
+  err.status = 404;
+  return err;
+};
+
 export const updateName = async (id, loggedInUserId, name) => {
-  if (id !== loggedInUserId) {
+  const account = await user.findById(id);
+  if (!account) throw accountNotFound();
+
+  if (!(await isOwnerOrAdmin(account, loggedInUserId))) {
     const err = new Error("You cannot edit another person's account");
     err.status = 403;
     throw err;
@@ -30,21 +49,19 @@ export const updateName = async (id, loggedInUserId, name) => {
     name: trimmedName,
   });
 
-  if (!updatedUser) {
-    const err = new Error("Account not found");
-    err.status = 404;
-    throw err;
-  }
+  if (!updatedUser) throw accountNotFound();
 };
 
-export const makeAdmin = async (id) => {
-  const updatedUser = await user.updateById(id, { "role.admin": true });
-
-  if (!updatedUser) {
-    const err = new Error("Account not found");
-    err.status = 404;
+export const makeAdmin = async (id, loggedInUserId) => {
+  if (!(await isAdmin(loggedInUserId))) {
+    const err = new Error("Only admins can grant admin access");
+    err.status = 403;
     throw err;
   }
+
+  const updatedUser = await user.updateById(id, { "role.admin": true });
+
+  if (!updatedUser) throw accountNotFound();
 
   return updatedUser;
 };

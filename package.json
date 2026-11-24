@@ -30,7 +30,8 @@
   },
   "allowScripts": {
     "node-gyp-build@4.8.4": true,
-    "bcrypt@6.0.0": true
+    "bcrypt@6.0.0": true,
+    "@parcel/watcher@2.6.0": true
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.4",
