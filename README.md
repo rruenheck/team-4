@@ -91,8 +91,13 @@ Browser
 v
 server.js
 |-- static --> public/style.css
+|-- express-session
+|   |--session cookie / req.session.userId
 |-- GET / --> redirect to /home
 |-- GET /home --> views/home.ejs
+|
+|-- routes/health.js
+    |--GET /health --> JSON {status: "ok"} (public)
 |
 |-- routes/auth.js
 |   |-- GET /login --> views/login.ejs
@@ -103,11 +108,14 @@ server.js
 |       v
 |   controller/auth.js
 |   (loginUser, registerUser)
-|       |-- registerUser
+|       |--loginUser
+            |--regenerates session and saves userId
+        |-- registerUser
 |       |   --> views/partials/register-message.ejs
 |       v
 |   service/auth.js <--> bcrypt
-|   (login, register)
+        |--login --> verifies password
+        |--register --> validates password confirmation and hashes password
 |       |
 |       v
 |   repository/user.js
@@ -115,15 +123,18 @@ server.js
 |-- routes/account.js
     |-- GET /account --> showAccount
     |-- POST /account/:id/name --> updateAccName
+    |-- PATCH /account/:id/admin --> makeAdmin
         |
         v
     controller/account.js
     (showAccount, updateAccName)
+    |--makeAdmin
         |
         v
     service/account.js
     |-- getAccount --> user.findById
     |-- updateName --> user.updateById
+    |-- makeAdmin --> user.updateById (role.admin=true)
         |
         v
     repository/user.js
@@ -134,13 +145,13 @@ repository/user.js
 |
 v
 Mongoose User model
-(email: String, passwordHash: String required, role: {member: String, admin: String})
+(email: String, passwordHash: String required, passwordHash: String required, role: {member: String, admin: String})
 |
 v
 MongoDB "users" collection
 
 __tests__/auth.test.js (Jest)
-|-- tests --> service/auth.js
+|-- tests --> service/auth.js and service/account.js
 |-- mocks --> repository/user.js
 |-- mocks --> bcrypt
 
@@ -230,6 +241,15 @@ verify:
 - Added role="alert" to the error message and updated the error styling to use the message error class.
 - Added tabindex="-1" to the result message and an HTMX event listener to move focus to the message after a submission.
 
+- Jackson changes
+- Added password confirmation during registration
+- Added server-side validation for mismatched passwords
+- added a public GET/health endpoint
+- updated system diagram
+test:
+- Confirmed mismatched passwords are rejected with npm test run
+- Confirmed GET/health returns `{"status":"ok"}`
+
 ## Accessibility Audit
 
 - I tested the accessibility for Home, Login, Register and Account page. I first checked the keyboard only navigation. All buttons, links and input fields can be accessed with Tab, Enter also works well.
@@ -260,3 +280,6 @@ verify:
 
 - Artemisia
 - I decided to add a consistent focus visible outline to interactive elements through src/input.css. A possible alternative would be adding individual Tailwind focus classes to each button, link, and input field. However, the shared CSS rule is easier to maintain because our application has multiple pages using the same styles. The alternative would require editing each page separately and could lead to inconsistent focus indicators if some elements were missed.
+
+- Jackson
+- I made the decision to give the health check its own route file with health.js. I believe that that was the intended idea for the assignment which was a major factor as to why I decided that, but I also  made that decision because it just made sense to keep it out of auth or account. I could have added it to either of those routes since it still would have worked but practically it did not make sense to add a health check within the authentication or accounts files in routes. 

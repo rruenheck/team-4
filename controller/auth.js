@@ -1,10 +1,10 @@
 import * as auth from "../service/auth.js";
 
 export const registerUser = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, confirmPassword } = req.body;
 
   try {
-    const user = await auth.register({ name, email, password });
+    const user = await auth.register({ name, email, password, confirmPassword });
 
     if (req.get("HX-Request")) {
       return res

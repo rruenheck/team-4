@@ -3,6 +3,7 @@ import auth from "./routes/auth.js";
 import accountRoutes from "./routes/account.js";
 import session from "express-session";
 import { connectToMongoDB } from "./db.js";
+import healthRoutes from "./routes/health.js";
 
 await connectToMongoDB();
 const app = express();
@@ -25,6 +26,7 @@ app.use(
   }),
 );
 
+app.use(healthRoutes);
 app.use(auth);
 app.use(accountRoutes);
 

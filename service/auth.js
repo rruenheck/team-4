@@ -1,10 +1,22 @@
 import bcrypt from "bcrypt";
 import * as user from "../repository/user.js";
 
-export const register = async ({ name, email, password }) => {
+export const register = async ({ name, email, password, confirmPassword }) => {
   if (!email || !password) {
     const err = new Error("Email and password required");
     err.status = 400;
+    throw err;
+  }
+
+  if(!confirmPassword){
+    const err = new Error("Password confirmation required");
+    err.status = 400;
+    throw err;
+  }
+
+  if (password !== confirmPassword){
+    const err = new Error("Passwords do not match");
+    err.status=400;
     throw err;
   }
 

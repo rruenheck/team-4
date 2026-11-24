@@ -40,9 +40,18 @@
           id="password"
           name="password"
           type="password"
-          autocomplete="current-password"
+          autocomplete="new-password"
           required
           class="w-full border border-gray-300 rounded p-2 focus:border-blue-600"
+        />
+        <label for="confirmPassword" class="font-medium">Confirm password</label>
+        <input 
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          autocomplete="new-password"
+          required
+          class="w-full border-gray-300 rounded p-2 focus:border-blue-600"
         />
 
         <button type="submit" class="bg-blue-700 text-white rounded px-4 py-2 hover:bg-blue-800">Register</button>
